@@ -1,78 +1,87 @@
 # Biblioteca Personale 📚
 
-Applicazione full-stack per la gestione di una biblioteca personale, sviluppata con **Spring Boot**.
-Consente di inserire, modificare, eliminare e visualizzare libri in base a titolo, autore, categoria e ISBN.
+Gestione di una biblioteca personale realizzata con **Spring Boot**.  
+Permette di aggiungere, modificare, cercare ed eliminare libri con una semplice interfaccia web.
 
 ---
 
-## 🚀 Funzionalità principali
+## 🚀 Funzionalità implementate
 
-- ✅ Aggiunta, modifica ed eliminazione libri
-- 📋 Visualizzazione elenco libri (Thymeleaf + Bootstrap)
-- 🔎 Ricerca per autore, titolo, ISBN e categoria (REST API)
-- 💾 Salvataggio su database H2 (persistence file-based)
-- 🔄 Integrazione backend con API REST e frontend Thymeleaf
-- 📊 Diagrammi UML generati con PlantUML
-
----
-
-## 🛠️ Tecnologie utilizzate
-
-- **Java 17+**
-- **Spring Boot** (MVC, Data JPA)
-- **Thymeleaf** (view layer)
-- **H2 Database** (embedded, console attiva)
-- **Bootstrap 5** (frontend)
-- **PlantUML** (documentazione tecnica)
+- ✅ Inserimento di nuovi libri
+- ✅ Modifica dati libro esistente
+- ✅ Eliminazione con conferma (modal Bootstrap)
+- ✅ Visualizzazione lista completa
+- ✅ Ricerca per titolo, autore, ISBN, categoria
+- ✅ API REST completa e testabile
+- ✅ Frontend con Thymeleaf + Bootstrap 5
+- ✅ Database H2 con console attiva
 
 ---
 
-## 🧪 Come eseguire il progetto
+## 🔧 Tecnologie utilizzate
+
+- Java 21
+- Spring Boot 3
+- Spring MVC
+- Spring Data JPA
+- Thymeleaf
+- Bootstrap 5
+- H2 Database
+
+---
+
+## ▶️ Come eseguire il progetto
 
 ```bash
-# Clona il progetto
-https://github.com/ivano1313/biblioteca-personale.git
+# 1. Clona il progetto
+git clone https://github.com/ivano1313/biblioteca-personale.git
 
-# Vai nella cartella
+# 2. Entra nella cartella
 cd biblioteca-personale
 
-# Compila ed esegui
+# 3. Avvia l'app
 ./mvnw spring-boot:run
 ```
 
-🔗 Visita l’app:
-- Web: `http://localhost:8080/libri`
-- Console H2: `http://localhost:8080/h2-console`
+Apri il browser su [http://localhost:8080/libri](http://localhost:8080/libri)
 
 ---
 
-## 🧭 Diagrammi UML
+## 🧪 Console H2
 
-Nel progetto sono presenti i seguenti file `.puml` (PlantUML):
+- URL: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+- JDBC URL: `jdbc:h2:./database/biblioteca`
+- User: `sa` — Password: (vuota)
 
-- `biblioteca-class-diagram.puml` → struttura classi (MVC)
-- `aggiungi-libro-sequence.puml` → sequenza aggiunta libro
-- `elimina-libro-sequence.puml` → sequenza eliminazione libro
-- `package-diagram.puml` → organizzazione a pacchetti
+---
 
-Puoi visualizzarli con:
-```bash
-java -jar plantuml.jar *.puml
+## 📂 Struttura del progetto
+
+```
+📁 model/
+    └── Libro.java, Categoria.java
+📁 repository/
+    └── LibroRepository.java
+📁 service/
+    └── LibroService.java
+📁 controller/
+    └── LibroWebController.java, LibroRestController.java
+📁 templates/
+    └── libri.html, form.html
 ```
 
 ---
 
-## 👤 Autore
+## 📌 Diagrammi UML inclusi
 
-> Sviluppato da **Ivan Avallone**  
-> GitHub: [ivano1313](https://github.com/ivano1313)
+Sono disponibili nella cartella `/uml_diagrams`:
 
----
-
-## 📄 Licenza
-
-Questo progetto è open-source sotto licenza MIT. Può essere liberamente studiato, modificato e riutilizzato per fini personali e didattici.
+- 📘 Class Diagram
+- 🔁 Sequence Diagram (aggiungi + elimina)
+- 📦 Package Diagram
 
 ---
 
-> ✨ Progetto creato come esercizio completo per imparare Spring Boot con architettura pulita e approccio full-stack.
+## 📝 Licenza
+
+Questo progetto è distribuito sotto licenza MIT.

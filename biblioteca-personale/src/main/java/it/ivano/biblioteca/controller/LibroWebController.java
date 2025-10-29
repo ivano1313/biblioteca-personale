@@ -3,8 +3,10 @@ package it.ivano.biblioteca.controller;
 import it.ivano.biblioteca.model.Categoria;
 import it.ivano.biblioteca.model.Libro;
 import it.ivano.biblioteca.service.LibroService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +41,11 @@ public class LibroWebController {
     }
 
     @PostMapping("/libri/modifica/{id}")
-    public String aggiornaLibro(@PathVariable("id") Integer id, @ModelAttribute("libro") Libro libro) {
+    public String aggiornaLibro(@PathVariable("id") Integer id, @Valid @ModelAttribute("libro") Libro libro, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("categorie", Categoria.values());
+            return "form";
+        }
         Libro libroEsistente = libroService.getLibroById(id);
         if (libroEsistente != null) {
             libroEsistente.setTitolo(libro.getTitolo());
@@ -59,7 +65,11 @@ public class LibroWebController {
     }
 
     @PostMapping("/libri/add")
-    public String aggiungiLibro(@ModelAttribute("libro") Libro libro) {
+    public String aggiungiLibro(@Valid @ModelAttribute("libro") Libro libro, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("categorie", Categoria.values());
+            return "form";
+        }
         libroService.addLibro(libro);
         return "redirect:/libri";
     }

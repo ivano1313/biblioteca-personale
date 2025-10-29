@@ -6,29 +6,72 @@
 </head>
 <body class="container mt-5">
 <h2 th:text="${libro.id} != null ? 'Modifica Libro' : 'Aggiungi Nuovo Libro'"></h2>
-  <form th:object="${libro}" th:action="@{/libri/add}" method="post">
-    <div class="mb-3">
-        <label for="titolo" class="form-label">Titolo</label>
-        <input type="text" class=" form-control" id="titolo" th:field="*{titolo}" required>
+  <form th:object="${libro}"
+        th:action="${libro.id != null ? '/libri/modifica/' + libro.id : '/libri/add'}"
+        method="post">
+
+    <!-- Alert per errori generali -->
+    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+        <strong>Attenzione!</strong> Correggi gli errori nel form prima di continuare.
     </div>
+
     <div class="mb-3">
-        <label for="autore" class="form-label">Autore</label>
-        <input type="text" class="form-control" id="autore" th:field="*{autore}" required>
+        <label for="titolo" class="form-label">Titolo *</label>
+        <input type="text"
+               class="form-control"
+               th:classappend="${#fields.hasErrors('titolo')} ? 'is-invalid' : ''"
+               id="titolo"
+               th:field="*{titolo}"
+               required>
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('titolo')}" th:errors="*{titolo}"></div>
     </div>
+
+    <div class="mb-3">
+        <label for="autore" class="form-label">Autore *</label>
+        <input type="text"
+               class="form-control"
+               th:classappend="${#fields.hasErrors('autore')} ? 'is-invalid' : ''"
+               id="autore"
+               th:field="*{autore}"
+               required>
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('autore')}" th:errors="*{autore}"></div>
+    </div>
+
     <div class="mb-3">
         <label for="isbn" class="form-label">ISBN</label>
-        <input type="text" class="form-control" id="isbn" th:field="*{isbn}">
+        <input type="text"
+               class="form-control"
+               th:classappend="${#fields.hasErrors('isbn')} ? 'is-invalid' : ''"
+               id="isbn"
+               th:field="*{isbn}"
+               placeholder="Es: 9788804668237">
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></div>
+        <small class="form-text text-muted">Formato: 10 o 13 cifre</small>
     </div>
+
     <div class="mb-3">
-        <label for="categoria" class="form-label">Categoria</label>
-        <select class="form-control" id="categoria" th:field="*{categoria}">
+        <label for="categoria" class="form-label">Categoria *</label>
+        <select class="form-control"
+                th:classappend="${#fields.hasErrors('categoria')} ? 'is-invalid' : ''"
+                id="categoria"
+                th:field="*{categoria}"
+                required>
+            <option value="">-- Seleziona categoria --</option>
             <option th:each="categoria : ${categorie}" th:value="${categoria}" th:text="${categoria}"></option>
         </select>
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
     </div>
+
     <div class="mb-3">
         <label for="annoPubblicazione" class="form-label">Anno di Pubblicazione</label>
-        <input type="date" class="form-control" id="annoPubblicazione" th:field="*{annoPubblicazione}">
+        <input type="date"
+               class="form-control"
+               th:classappend="${#fields.hasErrors('annoPubblicazione')} ? 'is-invalid' : ''"
+               id="annoPubblicazione"
+               th:field="*{annoPubblicazione}">
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('annoPubblicazione')}" th:errors="*{annoPubblicazione}"></div>
     </div>
+
     <button type="submit" class="btn btn-primary">Salva</button>
     <a class="btn btn-secondary" th:href="@{/libri}">Annulla</a>
   </form>

@@ -2,6 +2,7 @@ package it.ivano.biblioteca.controller;
 
 import it.ivano.biblioteca.model.Libro;
 import it.ivano.biblioteca.service.LibroService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,13 +25,13 @@ public class LibroRestController {
 
     // 🔹 POST aggiungi un libro
     @PostMapping("/add")
-    public Libro addLibro(@RequestBody Libro libro) {
+    public Libro addLibro(@Valid @RequestBody Libro libro) {
         return libroService.addLibro(libro);
     }
 
     // 🔹 PUT aggiorna un libro
     @PutMapping("/{id}")
-    public Libro updateLibro(@PathVariable Integer id, @RequestBody Libro libro) {
+    public Libro updateLibro(@PathVariable Integer id, @Valid @RequestBody Libro libro) {
         return libroService.updateLibro(id, libro);
     }
 

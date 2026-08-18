@@ -7,7 +7,12 @@ Permette di aggiungere, modificare, cercare ed eliminare libri con una semplice 
 
 ## 🚀 Funzionalità implementate
 
+- ✅ Dashboard iniziale con statistiche (libri per stato, per categoria, ultimi arrivi)
 - ✅ Inserimento di nuovi libri
+- ✅ Lookup automatico dei metadati da ISBN tramite Open Library
+- ✅ Copertine caricate da Open Library (con placeholder di riserva)
+- ✅ Stato di lettura (da leggere, in lettura, letto) e valutazione a stelle
+- ✅ Note personali su ogni libro
 - ✅ Modifica dati libro esistente
 - ✅ Eliminazione con conferma (modal Bootstrap)
 - ✅ Visualizzazione lista completa
@@ -43,14 +48,14 @@ cd biblioteca-personale
 ./mvnw spring-boot:run
 ```
 
-Apri il browser su [http://localhost:8080/libri](http://localhost:8080/libri)
+Apri il browser su [http://localhost:8080](http://localhost:8080) (dashboard) oppure [http://localhost:8080/libri](http://localhost:8080/libri) (lista libri).
 
 ---
 
 ## 🧪 Console H2
 
 - URL: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
-- JDBC URL: `jdbc:h2:./database/biblioteca`
+- JDBC URL: `jdbc:h2:file:./data/biblioteca-db`
 - User: `sa` — Password: (vuota)
 
 ---
@@ -59,26 +64,23 @@ Apri il browser su [http://localhost:8080/libri](http://localhost:8080/libri)
 
 ```
 📁 model/
-    └── Libro.java, Categoria.java
+    └── Libro.java, Categoria.java, StatoLettura.java
 📁 repository/
     └── LibroRepository.java
 📁 service/
-    └── LibroService.java
+    └── LibroService.java, OpenLibraryService.java
 📁 controller/
-    └── LibroWebController.java, LibroRestController.java
+    └── HomeController.java, LibroWebController.java, LibroRestController.java
 📁 templates/
-    └── libri.html, form.html
+    └── home.html, libri.html, form.html
 ```
 
 ---
 
-## 📌 Diagrammi UML inclusi
+## 🔌 API REST
 
-Sono disponibili nella cartella `/uml_diagrams`:
-
-- 📘 Class Diagram
-- 🔁 Sequence Diagram (aggiungi + elimina)
-- 📦 Package Diagram
+- API personalizzata: `/api/libri` (CRUD + `/api/libri/lookup?isbn=...`)
+- API generata da Spring Data REST: `/api/libroes`
 
 ---
 

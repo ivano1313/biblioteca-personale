@@ -7,3 +7,4 @@ target/
 *.zip
 *.db
 .DS_Store
+screenshots/

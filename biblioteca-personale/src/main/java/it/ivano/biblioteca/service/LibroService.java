@@ -1,6 +1,8 @@
 package it.ivano.biblioteca.service;
 
+import it.ivano.biblioteca.model.Categoria;
 import it.ivano.biblioteca.model.Libro;
+import it.ivano.biblioteca.model.StatoLettura;
 import it.ivano.biblioteca.repository.LibroRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,4 +38,23 @@ public class LibroService {
         libroRepository.deleteById(id);
     }
 
+    public List<Libro> getLibriByTitolo(String titolo) {
+        return libroRepository.findByTitoloContainingIgnoreCase(titolo);
+    }
+
+    public long countLibri() {
+        return libroRepository.count();
+    }
+
+    public long countByStatoLettura(StatoLettura statoLettura) {
+        return libroRepository.countByStatoLettura(statoLettura);
+    }
+
+    public long countByCategoria(Categoria categoria) {
+        return libroRepository.countByCategoria(categoria);
+    }
+
+    public List<Libro> getUltimiLibri() {
+        return libroRepository.findTop5ByOrderByIdDesc();
+    }
 }

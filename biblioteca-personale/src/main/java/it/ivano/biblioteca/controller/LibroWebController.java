@@ -2,13 +2,11 @@ package it.ivano.biblioteca.controller;
 
 import it.ivano.biblioteca.model.Categoria;
 import it.ivano.biblioteca.model.Libro;
+import it.ivano.biblioteca.model.StatoLettura;
 import it.ivano.biblioteca.service.LibroService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -22,8 +20,12 @@ public class LibroWebController {
     }
 
     @GetMapping("/libri")
-    public String getLibriPage(Model model) {
-        model.addAttribute("libri", libroService.getAllLibri());
+    public String getLibriPage(Model model, @RequestParam(required = false) String titolo) {
+        if (titolo != null && !titolo.isEmpty()) {
+            model.addAttribute("libri", libroService.getLibriByTitolo(titolo));
+        } else {
+            model.addAttribute("libri", libroService.getAllLibri());
+        }
         return "libri";
     }
 
@@ -33,6 +35,7 @@ public class LibroWebController {
         if (libro != null) {
             model.addAttribute("libro", libro);
             model.addAttribute("categorie", Categoria.values()); // Aggiungi le categorie disponibili
+            model.addAttribute("stati", StatoLettura.values()); // Stati di lettura disponibili
             return "form";
         }
         return "redirect:/libri";
@@ -44,8 +47,12 @@ public class LibroWebController {
         if (libroEsistente != null) {
             libroEsistente.setTitolo(libro.getTitolo());
             libroEsistente.setAutore(libro.getAutore());
+            libroEsistente.setIsbn(libro.getIsbn());
             libroEsistente.setCategoria(libro.getCategoria());
             libroEsistente.setAnnoPubblicazione(libro.getAnnoPubblicazione());
+            libroEsistente.setStatoLettura(libro.getStatoLettura());
+            libroEsistente.setValutazione(libro.getValutazione());
+            libroEsistente.setNote(libro.getNote());
             libroService.updateLibro(id, libroEsistente);
         }
         return "redirect:/libri";
@@ -55,6 +62,7 @@ public class LibroWebController {
     public String mostraForm(Model model){
         model.addAttribute("libro", new Libro());
         model.addAttribute("categorie", Categoria.values()); // Aggiungi le categorie disponibili
+        model.addAttribute("stati", StatoLettura.values()); // Stati di lettura disponibili
         return "form";
     }
 
@@ -64,12 +72,10 @@ public class LibroWebController {
         return "redirect:/libri";
     }
 
-    // LibroWebController.java
     @PostMapping("/libri/elimina/{id}")
     public String eliminaLibro(@PathVariable Integer id) {
-        libroService.deleteLibro(id);          // delega al service
-        return "redirect:/libri";              // torni subito alla lista
+        libroService.deleteLibro(id);
+        return "redirect:/libri";
     }
-
 
 }

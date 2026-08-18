@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca Personale — Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .card-stat { transition: transform .15s ease, box-shadow .15s ease; }
+        .card-stat:hover { transform: translateY(-4px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.2); }
+        .copertina-mini { height: 180px; object-fit: cover; }
+        .copertina-mini-placeholder {
+            height: 180px;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #6c757d 0%, #343a40 100%);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">📚 Biblioteca</a>
+        <div class="navbar-nav">
+            <a class="nav-link text-white" th:href="@{/libri}">I miei libri</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Dashboard</h1>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-primary" th:href="@{/libri}">
+                <i class="bi bi-collection me-1"></i>I miei libri
+            </a>
+            <a class="btn btn-success" th:href="@{/libri/nuovo}">
+                <i class="bi bi-plus-lg me-1"></i>Aggiungi Libro
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistiche principali -->
+    <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+        <div class="col">
+            <div class="card card-stat shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="bi bi-collection fs-2 text-primary"></i>
+                    <h2 class="display-6 mb-0" th:text="${totaleLibri}">0</h2>
+                    <small class="text-muted">Libri totali</small>
+                </div>
+            </div>
+        </div>
+        <div class="col" th:each="stato : ${perStato}">
+            <div class="card card-stat shadow-sm text-center h-100">
+                <div class="card-body">
+                    <i class="fs-2"
+                       th:classappend="${stato.key.name() == 'LETTO'} ? 'bi bi-check-circle text-success' : (${stato.key.name() == 'IN_LETTURA'} ? 'bi bi-book-half text-warning' : 'bi bi-bookmark text-secondary')"></i>
+                    <h2 class="display-6 mb-0" th:text="${stato.value}">0</h2>
+                    <small class="text-muted" th:text="${stato.key.label}">Stato</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Categorie -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-tags me-1"></i>Per categoria
+                </div>
+                <div class="card-body">
+                    <div th:if="${#maps.isEmpty(perCategoria)}" class="text-muted text-center py-3">
+                        Nessun libro categorizzato.
+                    </div>
+                    <div th:each="cat : ${perCategoria}" class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span th:text="${cat.key}">Categoria</span>
+                            <span class="badge text-bg-primary" th:text="${cat.value}">0</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar" role="progressbar"
+                                 th:style="'width: ' + ${totaleLibri > 0 ? (cat.value * 100 / totaleLibri) : 0} + '%'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Azioni rapide -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-lightning me-1"></i>Azioni rapide
+                </div>
+                <div class="card-body d-flex flex-column gap-2">
+                    <form method="GET" th:action="@{/libri}" class="input-group">
+                        <input type="text" name="titolo" class="form-control" placeholder="Cerca per titolo...">
+                        <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                    </form>
+                    <a class="btn btn-success" th:href="@{/libri/nuovo}">
+                        <i class="bi bi-plus-lg me-1"></i>Aggiungi un nuovo libro
+                    </a>
+                    <a class="btn btn-outline-primary" th:href="@{/libri}">
+                        <i class="bi bi-collection me-1"></i>Sfoglia tutta la biblioteca
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ultimi libri aggiunti -->
+    <h2 class="h5 mb-3"><i class="bi bi-clock-history me-1"></i>Ultimi libri aggiunti</h2>
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-3">
+        <div class="col" th:each="libro : ${ultimiLibri}">
+            <div class="card h-100 shadow-sm card-stat">
+                <img th:if="${libro.isbn != null and !libro.isbn.isEmpty()}"
+                     th:src="@{|https://covers.openlibrary.org/b/isbn/${libro.isbn}-M.jpg|}"
+                     class="card-img-top copertina-mini"
+                     th:alt="${libro.titolo}"
+                     loading="lazy"
+                     onerror="sostituisciCopertina(this)">
+                <div th:if="${libro.isbn == null or libro.isbn.isEmpty()}"
+                     class="copertina-mini-placeholder card-img-top">
+                    <i class="bi bi-book fs-1"></i>
+                </div>
+                <div class="card-body p-2">
+                    <h6 class="card-title small mb-1" th:text="${libro.titolo}">Titolo</h6>
+                    <small class="text-muted" th:text="${libro.autore}">Autore</small>
+                </div>
+                <div class="card-footer bg-white border-0 p-2 pt-0">
+                    <a class="btn btn-outline-warning btn-sm w-100"
+                       th:href="@{|/libri/modifica/${libro.id}|}">
+                        <i class="bi bi-pencil-square"></i> Modifica
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${#lists.isEmpty(ultimiLibri)}" class="text-center text-muted py-4">
+        <i class="bi bi-book fs-1 d-block mb-2"></i>
+        Nessun libro ancora. <a th:href="@{/libri/nuovo}">Aggiungi il primo!</a>
+    </div>
+</main>
+
+<script>
+    function sostituisciCopertina(img) {
+        const div = document.createElement('div');
+        div.className = 'copertina-mini-placeholder card-img-top';
+        div.innerHTML = '<i class="bi bi-book fs-1"></i>';
+        img.replaceWith(div);
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

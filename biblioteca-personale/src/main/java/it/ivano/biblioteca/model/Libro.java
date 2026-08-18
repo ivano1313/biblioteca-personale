@@ -19,6 +19,15 @@ public class Libro {
 
     private LocalDate annoPubblicazione;
 
+    @Enumerated(EnumType.STRING)
+    private StatoLettura statoLettura = StatoLettura.DA_LEGGERE;
+
+    // Valutazione da 1 a 5 stelle (null = non valutato)
+    private Integer valutazione;
+
+    @Column(length = 2000)
+    private String note;
+
     public Libro(Integer id, String titolo, String autore, String isbn, LocalDate annoPubblicazione, Categoria categoria) {
         this.id = id;
         this.titolo = titolo;
@@ -78,6 +87,30 @@ public class Libro {
 
     public void setAnnoPubblicazione(LocalDate annoPubblicazione) {
         this.annoPubblicazione = annoPubblicazione;
+    }
+
+    public StatoLettura getStatoLettura() {
+        return statoLettura;
+    }
+
+    public void setStatoLettura(StatoLettura statoLettura) {
+        this.statoLettura = statoLettura;
+    }
+
+    public Integer getValutazione() {
+        return valutazione;
+    }
+
+    public void setValutazione(Integer valutazione) {
+        this.valutazione = valutazione;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     @Override

@@ -1,0 +1,68 @@
+#!/bin/bash
+# Hook pre-commit: protegge gli elementi delicati del progetto Biblioteca Personale.
+# Blocca il commit se vengono toccati file critici senza il marker di conferma
+# "[delicato]" nel messaggio di commit.
+
+set -e
+
+# File e cartelle delicati: modificarli puo' rompere l'app in modo silenzioso
+PATTERN_DELICATI='^biblioteca-personale/src/main/resources/application\.properties$|^biblioteca-personale/pom\.xml$|^biblioteca-personale/data/|^\.github/copilot-instructions\.md$|^\.github/agents/|^\.agents/skills/'
+
+# File che non devono MAI essere committati
+PATTERN_VIETATI='\.env$|\.env\.|application-secret|credentials|\.pem$|\.key$'
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACMRD)
+
+if [ -z "$STAGED" ]; then
+    exit 0
+fi
+
+# 1. Blocco assoluto: segreti e credenziali
+VIETATI=$(echo "$STAGED" | grep -E "$PATTERN_VIETATI" || true)
+if [ -n "$VIETATI" ]; then
+    echo "❌ COMMIT BLOCCATO: stai per committare file che sembrano contenere segreti:"
+    echo "$VIETATI" | sed 's/^/   - /'
+    echo "   Rimuovili dall'area di staging (git restore --staged <file>)."
+    exit 1
+fi
+
+# 2. Database H2: mai committare i file del DB
+DB_FILES=$(echo "$STAGED" | grep -E '^biblioteca-personale/data/' || true)
+if [ -n "$DB_FILES" ]; then
+    echo "❌ COMMIT BLOCCATO: i file del database H2 non vanno committati:"
+    echo "$DB_FILES" | sed 's/^/   - /'
+    echo "   Sono gia' nel .gitignore? Verifica con: git check-ignore <file>"
+    exit 1
+fi
+
+# 3. File delicati: richiedono il marker [delicato] nel messaggio di commit
+DELICATI=$(echo "$STAGED" | grep -E "$PATTERN_DELICATI" || true)
+if [ -n "$DELICATI" ]; then
+    COMMIT_MSG_FILE=".git/COMMIT_EDITMSG"
+    # git commit non ha ancora scritto il messaggio in pre-commit: controlliamo
+    # se l'utente ha passato -m con il marker leggendo il file se esiste
+    MARKER_OK=false
+    if [ -f "$COMMIT_MSG_FILE" ] && grep -q '\[delicato\]' "$COMMIT_MSG_FILE" 2>/dev/null; then
+        MARKER_OK=true
+    fi
+    if [ "$MARKER_OK" = false ]; then
+        echo "⚠️  ATTENZIONE: stai modificando elementi delicati del progetto:"
+        echo "$DELICATI" | sed 's/^/   - /'
+        echo ""
+        echo "   Questi file possono rompere l'app se modificati per errore"
+        echo "   (es. togliere spring.data.rest.base-path rompe la home page)."
+        echo ""
+        echo "   Per confermare che la modifica e' intenzionale, includi [delicato]"
+        echo "   nel messaggio di commit, oppure esegui il commit dall'IDE confermando."
+        echo ""
+        # Non blocchiamo in modo assoluto: avvisiamo e lasciamo passare solo
+        # se la variabile d'ambiente e' impostata (utente consapevole)
+        if [ "$BIBLIOTECA_OK_DELICATI" != "1" ]; then
+            echo "   Per forzare: BIBLIOTECA_OK_DELICATI=1 git commit ..."
+            exit 1
+        fi
+        echo "   ✅ Variabile BIBLIOTECA_OK_DELICATI=1 rilevata: procedo."
+    fi
+fi
+
+exit 0

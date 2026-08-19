@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LibroRepository extends JpaRepository<Libro, Integer>, JpaSpecificationExecutor<Libro> {
 
@@ -23,4 +24,8 @@ public interface LibroRepository extends JpaRepository<Libro, Integer>, JpaSpeci
     long countByCategoria(Categoria categoria);
 
     List<Libro> findTop5ByOrderByIdDesc();
+
+    Optional<Libro> findFirstByStatoLetturaOrderByIdDesc(StatoLettura statoLettura);
+
+    List<Libro> findByDataFineLetturaIsNotNull();
 }

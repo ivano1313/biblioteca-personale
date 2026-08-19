@@ -38,6 +38,10 @@ public class Libro {
     private LocalDate dataInizioLettura;
     private LocalDate dataFineLettura;
 
+    // Progresso di lettura in pagine (null = non tracciato)
+    private Integer pagineAttuali;
+    private Integer totalePagine;
+
     public Libro(Integer id, String titolo, String autore, String isbn, LocalDate annoPubblicazione, Categoria categoria) {
         this.id = id;
         this.titolo = titolo;
@@ -137,6 +141,30 @@ public class Libro {
 
     public void setDataFineLettura(LocalDate dataFineLettura) {
         this.dataFineLettura = dataFineLettura;
+    }
+
+    public Integer getPagineAttuali() {
+        return pagineAttuali;
+    }
+
+    public void setPagineAttuali(Integer pagineAttuali) {
+        this.pagineAttuali = pagineAttuali;
+    }
+
+    public Integer getTotalePagine() {
+        return totalePagine;
+    }
+
+    public void setTotalePagine(Integer totalePagine) {
+        this.totalePagine = totalePagine;
+    }
+
+    // Percentuale di completamento 0-100, null se il totale non e' noto
+    public Integer getPercentualeLettura() {
+        if (pagineAttuali == null || totalePagine == null || totalePagine <= 0) {
+            return null;
+        }
+        return Math.min(100, pagineAttuali * 100 / totalePagine);
     }
 
     @Override

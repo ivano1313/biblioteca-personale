@@ -88,6 +88,38 @@
                 </li>
             </ul>
 
+            <!-- Progresso di lettura -->
+            <div class="card shadow-sm mb-4"
+                 th:if="${libro.statoLettura?.name() == 'IN_LETTURA' or libro.pagineAttuali != null or libro.totalePagine != null}">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-book-half me-1"></i>Progresso di lettura
+                </div>
+                <div class="card-body">
+                    <div th:if="${libro.percentualeLettura != null}">
+                        <div class="progress mb-1" style="height: 8px;">
+                            <div class="progress-bar bg-primary" role="progressbar"
+                                 th:id="'progress-bar-' + ${libro.id}"
+                                 th:style="'width: ' + ${libro.percentualeLettura} + '%'"></div>
+                        </div>
+                        <small class="text-muted"
+                               th:id="'progress-label-' + ${libro.id}"
+                               th:text="${libro.pagineAttuali} + ' / ' + ${libro.totalePagine} + ' pag. (' + ${libro.percentualeLettura} + '%)'"></small>
+                    </div>
+                    <small class="text-muted" th:if="${libro.percentualeLettura == null}"
+                           th:id="'progress-label-' + ${libro.id}"
+                           th:text="${libro.pagineAttuali != null} ? ${libro.pagineAttuali} + ' pagine lette' : 'Imposta le pagine totali per vedere la percentuale'"></small>
+                    <form class="input-group input-group-sm mt-2" style="max-width: 260px;"
+                          th:onsubmit="'aggiornaProgresso(' + ${libro.id} + '); return false;'">
+                        <input type="number" class="form-control" min="0" placeholder="A pagina..."
+                               th:id="'pagine-input-' + ${libro.id}"
+                               th:value="${libro.pagineAttuali}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-arrow-repeat me-1"></i>Aggiorna progresso
+                        </button>
+                    </form>
+                </div>
+            </div>
+
             <!-- Note -->
             <div class="card shadow-sm mb-4" th:if="${libro.note != null and !libro.note.isEmpty()}">
                 <div class="card-header bg-white fw-bold">
@@ -139,6 +171,33 @@
         div.className = 'copertina-grande-placeholder';
         div.innerHTML = '<i class="bi bi-book fs-1"></i><small class="mt-2">Nessuna copertina</small>';
         img.replaceWith(div);
+    }
+
+    // Aggiorna il progresso pagine senza ricaricare la pagina
+    function aggiornaProgresso(libroId) {
+        const input = document.getElementById('pagine-input-' + libroId);
+        fetch('/libri/' + libroId + '/progresso', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'pagineAttuali=' + encodeURIComponent(input.value)
+        })
+        .then(r => {
+            if (!r.ok) throw new Error('update failed');
+            return r.json();
+        })
+        .then(d => {
+            const bar = document.getElementById('progress-bar-' + libroId);
+            const label = document.getElementById('progress-label-' + libroId);
+            if (bar && d.percentuale != null) {
+                bar.style.width = d.percentuale + '%';
+            }
+            if (label) {
+                label.textContent = d.percentuale != null
+                    ? d.pagineAttuali + ' / ' + d.totalePagine + ' pag. (' + d.percentuale + '%)'
+                    : d.pagineAttuali + ' pagine lette';
+            }
+        })
+        .catch(() => alert('Errore durante l\'aggiornamento del progresso.'));
     }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

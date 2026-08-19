@@ -4,11 +4,14 @@ import it.ivano.biblioteca.model.Categoria;
 import it.ivano.biblioteca.model.Libro;
 import it.ivano.biblioteca.model.StatoLettura;
 import it.ivano.biblioteca.service.LibroService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class LibroWebController {
@@ -74,6 +77,8 @@ public class LibroWebController {
             libroEsistente.setNote(libro.getNote());
             libroEsistente.setDataInizioLettura(libro.getDataInizioLettura());
             libroEsistente.setDataFineLettura(libro.getDataFineLettura());
+            libroEsistente.setPagineAttuali(libro.getPagineAttuali());
+            libroEsistente.setTotalePagine(libro.getTotalePagine());
             libroService.updateLibro(id, libroEsistente);
         }
         return "redirect:/libri";
@@ -91,6 +96,22 @@ public class LibroWebController {
     public String aggiungiLibro(@ModelAttribute("libro") Libro libro) {
         libroService.addLibro(libro);
         return "redirect:/libri";
+    }
+
+    // Aggiornamento rapido del progresso pagine (chiamato via fetch dalla UI)
+    @PostMapping("/libri/{id}/progresso")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> aggiornaProgresso(@PathVariable Integer id,
+                                                                 @RequestParam Integer pagineAttuali) {
+        Libro libro = libroService.aggiornaProgresso(id, pagineAttuali);
+        if (libro == null) {
+            return ResponseEntity.notFound().build();
+        }
+        Map<String, Object> risposta = new HashMap<>();
+        risposta.put("pagineAttuali", libro.getPagineAttuali());
+        risposta.put("totalePagine", libro.getTotalePagine());
+        risposta.put("percentuale", libro.getPercentualeLettura());
+        return ResponseEntity.ok(risposta);
     }
 
     @PostMapping("/libri/elimina/{id}")

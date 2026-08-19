@@ -9,8 +9,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class LibroService {
@@ -96,5 +99,28 @@ public class LibroService {
 
     public List<Libro> getUltimiLibri() {
         return libroRepository.findTop5ByOrderByIdDesc();
+    }
+
+    // Il libro in lettura piu' recente (per la hero card in dashboard)
+    public Libro getLibroInLettura() {
+        return libroRepository.findFirstByStatoLetturaOrderByIdDesc(StatoLettura.IN_LETTURA).orElse(null);
+    }
+
+    // Aggiorna solo il progresso pagine; ritorna null se il libro non esiste
+    public Libro aggiornaProgresso(Integer id, Integer pagineAttuali) {
+        Libro libro = getLibroById(id);
+        if (libro == null) {
+            return null;
+        }
+        libro.setPagineAttuali(pagineAttuali);
+        return libroRepository.save(libro);
+    }
+
+    // Libri letti raggruppati per mese di fine lettura (chiave: "2026-08")
+    public Map<YearMonth, Long> getLibriLettiPerMese() {
+        return libroRepository.findByDataFineLetturaIsNotNull().stream()
+                .collect(Collectors.groupingBy(
+                        libro -> YearMonth.from(libro.getDataFineLettura()),
+                        Collectors.counting()));
     }
 }

@@ -43,6 +43,59 @@
         </div>
     </div>
 
+    <!-- Hero: libro attualmente in lettura -->
+    <div class="card shadow-sm mb-4 border-0" th:if="${libroInLettura != null}">
+        <div class="row g-0 align-items-center">
+            <div class="col-auto p-3">
+                <img th:if="${libroInLettura.isbn != null and !libroInLettura.isbn.isEmpty()}"
+                     th:src="@{|https://covers.openlibrary.org/b/isbn/${libroInLettura.isbn}-M.jpg|}"
+                     th:alt="${libroInLettura.titolo}"
+                     style="width: 100px; border-radius: .5rem;"
+                     onerror="this.style.display='none'">
+            </div>
+            <div class="col p-3">
+                <small class="text-uppercase text-muted fw-semibold"><i class="bi bi-book-half me-1"></i>Stai leggendo</small>
+                <h2 class="h4 mb-1">
+                    <a th:href="@{|/libri/${libroInLettura.id}|}" class="text-decoration-none text-dark" th:text="${libroInLettura.titolo}">Titolo</a>
+                </h2>
+                <p class="text-muted mb-2" th:text="${libroInLettura.autore}">Autore</p>
+                <div th:if="${libroInLettura.percentualeLettura != null}">
+                    <div class="progress mb-1" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                             th:id="'progress-bar-' + ${libroInLettura.id}"
+                             th:style="'width: ' + ${libroInLettura.percentualeLettura} + '%'"></div>
+                    </div>
+                    <small class="text-muted"
+                           th:id="'progress-label-' + ${libroInLettura.id}"
+                           th:text="${libroInLettura.pagineAttuali} + ' / ' + ${libroInLettura.totalePagine} + ' pag. (' + ${libroInLettura.percentualeLettura} + '%)'"></small>
+                </div>
+                <small class="text-muted" th:if="${libroInLettura.percentualeLettura == null}"
+                       th:id="'progress-label-' + ${libroInLettura.id}"
+                       th:text="${libroInLettura.pagineAttuali != null} ? ${libroInLettura.pagineAttuali} + ' pagine lette' : 'Progresso non tracciato: imposta le pagine totali nel libro'"></small>
+            </div>
+            <div class="col-md-auto p-3">
+                <form class="input-group input-group-sm" style="max-width: 220px;"
+                      th:onsubmit="'aggiornaProgresso(' + ${libroInLettura.id} + '); return false;'">
+                    <input type="number" class="form-control" min="0" placeholder="A pagina..."
+                           th:id="'pagine-input-' + ${libroInLettura.id}"
+                           th:value="${libroInLettura.pagineAttuali}">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-arrow-repeat me-1"></i>Aggiorna
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm mb-4 border-0 text-center" th:if="${libroInLettura == null}">
+        <div class="card-body py-4">
+            <i class="bi bi-book fs-2 text-muted"></i>
+            <p class="mb-2 mt-1">Nessun libro in corso — iniziane uno!</p>
+            <a class="btn btn-primary btn-sm" th:href="@{/libri/nuovo}">
+                <i class="bi bi-plus-lg me-1"></i>Aggiungi un libro
+            </a>
+        </div>
+    </div>
+
     <!-- Statistiche principali -->
     <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
         <div class="col">
@@ -77,16 +130,7 @@
                     <div th:if="${#maps.isEmpty(perCategoria)}" class="text-muted text-center py-3">
                         Nessun libro categorizzato.
                     </div>
-                    <div th:each="cat : ${perCategoria}" class="mb-2">
-                        <div class="d-flex justify-content-between">
-                            <span th:text="${cat.key}">Categoria</span>
-                            <span class="badge text-bg-primary" th:text="${cat.value}">0</span>
-                        </div>
-                        <div class="progress" style="height: 6px;">
-                            <div class="progress-bar" role="progressbar"
-                                 th:style="'width: ' + ${totaleLibri > 0 ? (cat.value * 100 / totaleLibri) : 0} + '%'"></div>
-                        </div>
-                    </div>
+                    <canvas id="chartCategorie" th:if="${!#maps.isEmpty(perCategoria)}"></canvas>
                 </div>
             </div>
         </div>
@@ -108,6 +152,20 @@
                     <a class="btn btn-outline-primary" th:href="@{/libri}">
                         <i class="bi bi-collection me-1"></i>Sfoglia tutta la biblioteca
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grafico: libri letti per mese -->
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-bar-chart me-1"></i>Libri letti negli ultimi 12 mesi
+                </div>
+                <div class="card-body">
+                    <canvas id="chartMesi" style="max-height: 260px;"></canvas>
                 </div>
             </div>
         </div>
@@ -156,7 +214,80 @@
         div.innerHTML = '<i class="bi bi-book fs-1"></i>';
         img.replaceWith(div);
     }
+
+    // Aggiorna il progresso pagine senza ricaricare la pagina
+    function aggiornaProgresso(libroId) {
+        const input = document.getElementById('pagine-input-' + libroId);
+        fetch('/libri/' + libroId + '/progresso', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'pagineAttuali=' + encodeURIComponent(input.value)
+        })
+        .then(r => {
+            if (!r.ok) throw new Error('update failed');
+            return r.json();
+        })
+        .then(d => {
+            const bar = document.getElementById('progress-bar-' + libroId);
+            const label = document.getElementById('progress-label-' + libroId);
+            if (bar && d.percentuale != null) {
+                bar.style.width = d.percentuale + '%';
+            }
+            if (label) {
+                label.textContent = d.percentuale != null
+                    ? d.pagineAttuali + ' / ' + d.totalePagine + ' pag. (' + d.percentuale + '%)'
+                    : d.pagineAttuali + ' pagine lette';
+            }
+        })
+        .catch(() => alert('Errore durante l\'aggiornamento del progresso.'));
+    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script th:inline="javascript">
+    // Dati serializzati da Thymeleaf
+    const mesiLabels = [[${mesiLabels}]];
+    const mesiValori = [[${mesiValori}]];
+    const catLabels = [[${catLabels}]];
+    const catValori = [[${catValori}]];
+
+    new Chart(document.getElementById('chartMesi'), {
+        type: 'bar',
+        data: {
+            labels: mesiLabels,
+            datasets: [{
+                label: 'Libri letti',
+                data: mesiValori,
+                backgroundColor: '#4f46e5',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    const canvasCategorie = document.getElementById('chartCategorie');
+    if (canvasCategorie) {
+        new Chart(canvasCategorie, {
+            type: 'doughnut',
+            data: {
+                labels: catLabels,
+                datasets: [{
+                    data: catValori,
+                    backgroundColor: ['#4f46e5', '#f59e0b', '#10b981', '#ec4999', '#3b82f6',
+                                      '#f97316', '#22c55e', '#6366f1', '#eab308', '#14b8a6',
+                                      '#ef4444', '#a3e635', '#8b5cf6', '#06b6d4', '#f43f5e',
+                                      '#84cc16', '#d946ef', '#0ea5e9', '#fb923c', '#64748b']
+                }]
+            },
+            options: {
+                plugins: { legend: { position: 'right' } }
+            }
+        });
+    }
+</script>
 </body>
 </html>

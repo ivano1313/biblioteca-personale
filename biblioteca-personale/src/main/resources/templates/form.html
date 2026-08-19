@@ -62,6 +62,16 @@
             <input type="date" class="form-control" id="dataFineLettura" th:field="*{dataFineLettura}">
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="pagineAttuali" class="form-label">Pagine lette</label>
+            <input type="number" class="form-control" id="pagineAttuali" th:field="*{pagineAttuali}" min="0" placeholder="es. 120">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="totalePagine" class="form-label">Pagine totali</label>
+            <input type="number" class="form-control" id="totalePagine" th:field="*{totalePagine}" min="0" placeholder="es. 320">
+        </div>
+    </div>
     <div class="mb-3">
         <label for="valutazione" class="form-label">Valutazione</label>
         <select class="form-control" id="valutazione" th:field="*{valutazione}">

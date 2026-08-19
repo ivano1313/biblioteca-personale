@@ -565,9 +565,9 @@ Il tuo progetto è già su una buona base. La tabella seguente suggerisce un **r
 
 | Sprint | Funzionalità | Impatto | Effort |
 |---|---|---|---|
-| **Sprint 1** | Pagina dettaglio libro | ⭐⭐⭐⭐⭐ | Medio |
-| **Sprint 1** | Stato ABBANDONATO + data inizio/fine | ⭐⭐⭐⭐ | Basso |
-| **Sprint 1** | Filtri multipli + ordinamento lista | ⭐⭐⭐⭐⭐ | Medio |
+| **Sprint 1** | ✅ Pagina dettaglio libro (fatto 19/08/2026) | ⭐⭐⭐⭐⭐ | Medio |
+| **Sprint 1** | ✅ Stato ABBANDONATO + data inizio/fine (fatto 19/08/2026) | ⭐⭐⭐⭐ | Basso |
+| **Sprint 1** | ✅ Filtri multipli + ordinamento lista (fatto 19/08/2026) | ⭐⭐⭐⭐⭐ | Medio |
 | **Sprint 2** | Toggle griglia/lista | ⭐⭐⭐⭐ | Basso |
 | **Sprint 2** | Hero "libro in lettura" in dashboard | ⭐⭐⭐⭐ | Basso |
 | **Sprint 2** | Barra progresso pagine | ⭐⭐⭐⭐ | Medio |

@@ -11,12 +11,14 @@ Permette di aggiungere, modificare, cercare ed eliminare libri con una semplice 
 - ✅ Inserimento di nuovi libri
 - ✅ Lookup automatico dei metadati da ISBN tramite Open Library
 - ✅ Copertine caricate da Open Library (con placeholder di riserva)
-- ✅ Stato di lettura (da leggere, in lettura, letto) e valutazione a stelle
+- ✅ Stato di lettura (da leggere, in lettura, letto, abbandonato) e valutazione a stelle
+- ✅ Date di inizio/fine lettura con durata calcolata
+- ✅ Pagina di dettaglio dedicata per ogni libro (`/libri/{id}`)
 - ✅ Note personali su ogni libro
 - ✅ Modifica dati libro esistente
 - ✅ Eliminazione con conferma (modal Bootstrap)
 - ✅ Visualizzazione lista completa
-- ✅ Ricerca per titolo, autore, ISBN, categoria
+- ✅ Ricerca per titolo con filtri cumulabili (stato, categoria, valutazione) e ordinamento (titolo, autore, anno, valutazione, data fine lettura)
 - ✅ API REST completa e testabile
 - ✅ Frontend con Thymeleaf + Bootstrap 5
 - ✅ Database H2 con console attiva
@@ -72,7 +74,7 @@ Apri il browser su [http://localhost:8080](http://localhost:8080) (dashboard) op
 📁 controller/
     └── HomeController.java, LibroWebController.java, LibroRestController.java
 📁 templates/
-    └── home.html, libri.html, form.html
+    └── home.html, libri.html, form.html, dettaglio.html
 ```
 
 ---

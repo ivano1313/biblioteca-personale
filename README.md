@@ -17,6 +17,9 @@ Permette di aggiungere, modificare, cercare ed eliminare libri con una semplice 
 - ✅ Hero "Stai leggendo" in dashboard con il libro in corso
 - ✅ Grafici in dashboard con Chart.js (libri letti per mese, distribuzione per categoria)
 - ✅ Vista lista/griglia commutabile con preferenza salvata
+- ✅ Citazioni per libro con pagina di riferimento (nella pagina dettaglio)
+- ✅ Obiettivo di lettura annuale con barra di avanzamento in dashboard
+- ✅ Tag personalizzati (badge, filtro dedicato, creazione al volo dal form)
 - ✅ Pagina di dettaglio dedicata per ogni libro (`/libri/{id}`)
 - ✅ Note personali su ogni libro
 - ✅ Modifica dati libro esistente
@@ -70,9 +73,9 @@ Apri il browser su [http://localhost:8080](http://localhost:8080) (dashboard) op
 
 ```
 📁 model/
-    └── Libro.java, Categoria.java, StatoLettura.java
+    └── Libro.java, Categoria.java, StatoLettura.java, Citazione.java, Tag.java, Impostazione.java
 📁 repository/
-    └── LibroRepository.java
+    └── LibroRepository.java, CitazioneRepository.java, TagRepository.java, ImpostazioneRepository.java
 📁 service/
     └── LibroService.java, OpenLibraryService.java
 📁 controller/

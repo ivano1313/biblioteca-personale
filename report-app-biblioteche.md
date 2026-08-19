@@ -572,9 +572,9 @@ Il tuo progetto è già su una buona base. La tabella seguente suggerisce un **r
 | **Sprint 2** | ✅ Hero "libro in lettura" in dashboard (fatto 19/08/2026) | ⭐⭐⭐⭐ | Basso |
 | **Sprint 2** | ✅ Barra progresso pagine (fatto 19/08/2026) | ⭐⭐⭐⭐ | Medio |
 | **Sprint 2** | ✅ Chart.js per statistiche dashboard (fatto 19/08/2026) | ⭐⭐⭐⭐ | Medio |
-| **Sprint 3** | Citazioni per libro | ⭐⭐⭐ | Medio |
-| **Sprint 3** | Reading Goal annuale | ⭐⭐⭐ | Basso |
-| **Sprint 3** | Tag personalizzati | ⭐⭐⭐ | Alto |
+| **Sprint 3** | ✅ Citazioni per libro (fatto 19/08/2026) | ⭐⭐⭐ | Medio |
+| **Sprint 3** | ✅ Reading Goal annuale (fatto 19/08/2026) | ⭐⭐⭐ | Basso |
+| **Sprint 3** | ✅ Tag personalizzati (fatto 19/08/2026) | ⭐⭐⭐ | Alto |
 | **Futuro** | Export CSV | ⭐⭐⭐ | Basso |
 | **Futuro** | Palette colori + tipografia upgrade | ⭐⭐⭐ | Basso |
 

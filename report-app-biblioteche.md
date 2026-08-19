@@ -568,10 +568,10 @@ Il tuo progetto è già su una buona base. La tabella seguente suggerisce un **r
 | **Sprint 1** | ✅ Pagina dettaglio libro (fatto 19/08/2026) | ⭐⭐⭐⭐⭐ | Medio |
 | **Sprint 1** | ✅ Stato ABBANDONATO + data inizio/fine (fatto 19/08/2026) | ⭐⭐⭐⭐ | Basso |
 | **Sprint 1** | ✅ Filtri multipli + ordinamento lista (fatto 19/08/2026) | ⭐⭐⭐⭐⭐ | Medio |
-| **Sprint 2** | Toggle griglia/lista | ⭐⭐⭐⭐ | Basso |
-| **Sprint 2** | Hero "libro in lettura" in dashboard | ⭐⭐⭐⭐ | Basso |
-| **Sprint 2** | Barra progresso pagine | ⭐⭐⭐⭐ | Medio |
-| **Sprint 2** | Chart.js per statistiche dashboard | ⭐⭐⭐⭐ | Medio |
+| **Sprint 2** | ✅ Toggle griglia/lista (fatto 19/08/2026) | ⭐⭐⭐⭐ | Basso |
+| **Sprint 2** | ✅ Hero "libro in lettura" in dashboard (fatto 19/08/2026) | ⭐⭐⭐⭐ | Basso |
+| **Sprint 2** | ✅ Barra progresso pagine (fatto 19/08/2026) | ⭐⭐⭐⭐ | Medio |
+| **Sprint 2** | ✅ Chart.js per statistiche dashboard (fatto 19/08/2026) | ⭐⭐⭐⭐ | Medio |
 | **Sprint 3** | Citazioni per libro | ⭐⭐⭐ | Medio |
 | **Sprint 3** | Reading Goal annuale | ⭐⭐⭐ | Basso |
 | **Sprint 3** | Tag personalizzati | ⭐⭐⭐ | Alto |

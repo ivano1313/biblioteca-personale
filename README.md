@@ -13,6 +13,10 @@ Permette di aggiungere, modificare, cercare ed eliminare libri con una semplice 
 - ✅ Copertine caricate da Open Library (con placeholder di riserva)
 - ✅ Stato di lettura (da leggere, in lettura, letto, abbandonato) e valutazione a stelle
 - ✅ Date di inizio/fine lettura con durata calcolata
+- ✅ Tracciamento progresso in pagine con barra di avanzamento (aggiornabile inline)
+- ✅ Hero "Stai leggendo" in dashboard con il libro in corso
+- ✅ Grafici in dashboard con Chart.js (libri letti per mese, distribuzione per categoria)
+- ✅ Vista lista/griglia commutabile con preferenza salvata
 - ✅ Pagina di dettaglio dedicata per ogni libro (`/libri/{id}`)
 - ✅ Note personali su ogni libro
 - ✅ Modifica dati libro esistente

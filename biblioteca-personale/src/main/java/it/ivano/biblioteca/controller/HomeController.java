@@ -6,6 +6,8 @@ import it.ivano.biblioteca.service.LibroService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -72,6 +74,24 @@ public class HomeController {
         model.addAttribute("catLabels", catLabels);
         model.addAttribute("catValori", catValori);
 
+        // Obiettivo di lettura dell'anno in corso
+        int annoCorrente = YearMonth.now().getYear();
+        Integer obiettivo = libroService.getObiettivoAnnuale();
+        long lettiQuestAnno = libroService.countLettiNellAnno(annoCorrente);
+        model.addAttribute("annoCorrente", annoCorrente);
+        model.addAttribute("obiettivo", obiettivo);
+        model.addAttribute("lettiQuestAnno", lettiQuestAnno);
+        model.addAttribute("percentualeObiettivo",
+                obiettivo != null && obiettivo > 0 ? Math.min(100, lettiQuestAnno * 100 / obiettivo) : null);
+
         return "home";
+    }
+
+    @PostMapping("/impostazioni/obiettivo")
+    public String salvaObiettivo(@RequestParam Integer obiettivo) {
+        if (obiettivo > 0) {
+            libroService.setObiettivoAnnuale(obiettivo);
+        }
+        return "redirect:/";
     }
 }

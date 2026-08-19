@@ -82,8 +82,15 @@
         </select>
     </div>
     <div class="mb-3">
+        <label for="tagCsv" class="form-label">Tag</label>
+        <input type="text" class="form-control" id="tagCsv" name="tagCsv"
+               th:value="${#strings.listJoin(libro.tag.?[nome], ', ')}"
+               placeholder="es. preferiti-2026, regalato, riletto">
+        <small class="form-text text-muted">Separati da virgola. Vengono creati se non esistono.</small>
+    </div>
+    <div class="mb-3">
         <label for="note" class="form-label">Note</label>
-        <textarea class="form-control" id="note" th:field="*{note}" rows="3" placeholder="Appunti, impressioni, citazioni..."></textarea>
+        <textarea class="form-control" id="note" th:field="*{note}" rows="3" placeholder="Appunti, impressioni..."></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Salva</button>
     <a class="btn btn-secondary" th:href="@{/libri}">Annulla</a>

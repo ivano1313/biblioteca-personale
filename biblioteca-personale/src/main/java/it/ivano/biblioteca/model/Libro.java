@@ -5,6 +5,10 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Libro {
@@ -41,6 +45,17 @@ public class Libro {
     // Progresso di lettura in pagine (null = non tracciato)
     private Integer pagineAttuali;
     private Integer totalePagine;
+
+    // Citazioni tratte dal libro
+    @OneToMany(mappedBy = "libro", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Citazione> citazioni = new ArrayList<>();
+
+    // Tag personalizzati (es. "preferiti-2026", "regalato")
+    @ManyToMany
+    @JoinTable(name = "libro_tag",
+            joinColumns = @JoinColumn(name = "libro_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tag = new HashSet<>();
 
     public Libro(Integer id, String titolo, String autore, String isbn, LocalDate annoPubblicazione, Categoria categoria) {
         this.id = id;
@@ -165,6 +180,22 @@ public class Libro {
             return null;
         }
         return Math.min(100, pagineAttuali * 100 / totalePagine);
+    }
+
+    public List<Citazione> getCitazioni() {
+        return citazioni;
+    }
+
+    public void setCitazioni(List<Citazione> citazioni) {
+        this.citazioni = citazioni;
+    }
+
+    public Set<Tag> getTag() {
+        return tag;
+    }
+
+    public void setTag(Set<Tag> tag) {
+        this.tag = tag;
     }
 
     @Override

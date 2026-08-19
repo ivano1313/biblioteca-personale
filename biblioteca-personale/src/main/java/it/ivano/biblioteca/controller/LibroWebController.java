@@ -28,15 +28,18 @@ public class LibroWebController {
                                @RequestParam(required = false) StatoLettura stato,
                                @RequestParam(required = false) Categoria categoria,
                                @RequestParam(required = false) Integer valutazione,
+                               @RequestParam(required = false) String tag,
                                @RequestParam(required = false) String sort) {
-        model.addAttribute("libri", libroService.cercaLibri(titolo, stato, categoria, valutazione, sort));
+        model.addAttribute("libri", libroService.cercaLibri(titolo, stato, categoria, valutazione, tag, sort));
         model.addAttribute("categorie", Categoria.values());
         model.addAttribute("stati", StatoLettura.values());
+        model.addAttribute("tuttiITag", libroService.getAllTag());
         // Valori correnti dei filtri, per mantenere le select sincronizzate
         model.addAttribute("titoloCorrente", titolo);
         model.addAttribute("statoCorrente", stato);
         model.addAttribute("categoriaCorrente", categoria);
         model.addAttribute("valutazioneCorrente", valutazione);
+        model.addAttribute("tagCorrente", tag);
         model.addAttribute("sortCorrente", sort);
         return "libri";
     }
@@ -64,7 +67,8 @@ public class LibroWebController {
     }
 
     @PostMapping("/libri/modifica/{id}")
-    public String aggiornaLibro(@PathVariable("id") Integer id, @ModelAttribute("libro") Libro libro) {
+    public String aggiornaLibro(@PathVariable("id") Integer id, @ModelAttribute("libro") Libro libro,
+                                @RequestParam(required = false) String tagCsv) {
         Libro libroEsistente = libroService.getLibroById(id);
         if (libroEsistente != null) {
             libroEsistente.setTitolo(libro.getTitolo());
@@ -79,9 +83,11 @@ public class LibroWebController {
             libroEsistente.setDataFineLettura(libro.getDataFineLettura());
             libroEsistente.setPagineAttuali(libro.getPagineAttuali());
             libroEsistente.setTotalePagine(libro.getTotalePagine());
+            libroEsistente.setTag(libroService.risolviTag(tagCsv));
             libroService.updateLibro(id, libroEsistente);
+            libroService.eliminaTagOrfani();
         }
-        return "redirect:/libri";
+        return "redirect:/libri/" + id;
     }
 
     @GetMapping("/libri/nuovo")
@@ -93,7 +99,9 @@ public class LibroWebController {
     }
 
     @PostMapping("/libri/add")
-    public String aggiungiLibro(@ModelAttribute("libro") Libro libro) {
+    public String aggiungiLibro(@ModelAttribute("libro") Libro libro,
+                                @RequestParam(required = false) String tagCsv) {
+        libro.setTag(libroService.risolviTag(tagCsv));
         libroService.addLibro(libro);
         return "redirect:/libri";
     }
@@ -114,9 +122,24 @@ public class LibroWebController {
         return ResponseEntity.ok(risposta);
     }
 
+    @PostMapping("/libri/{id}/citazioni")
+    public String aggiungiCitazione(@PathVariable Integer id,
+                                    @RequestParam String testo,
+                                    @RequestParam(required = false) Integer pagina) {
+        libroService.aggiungiCitazione(id, testo, pagina);
+        return "redirect:/libri/" + id;
+    }
+
+    @PostMapping("/libri/{id}/citazioni/{citazioneId}/elimina")
+    public String eliminaCitazione(@PathVariable Integer id, @PathVariable Integer citazioneId) {
+        libroService.eliminaCitazione(citazioneId);
+        return "redirect:/libri/" + id;
+    }
+
     @PostMapping("/libri/elimina/{id}")
     public String eliminaLibro(@PathVariable Integer id) {
         libroService.deleteLibro(id);
+        libroService.eliminaTagOrfani();
         return "redirect:/libri";
     }
 

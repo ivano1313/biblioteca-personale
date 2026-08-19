@@ -6,6 +6,7 @@ import it.ivano.biblioteca.model.StatoLettura;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +29,6 @@ public interface LibroRepository extends JpaRepository<Libro, Integer>, JpaSpeci
     Optional<Libro> findFirstByStatoLetturaOrderByIdDesc(StatoLettura statoLettura);
 
     List<Libro> findByDataFineLetturaIsNotNull();
+
+    long countByDataFineLetturaBetween(LocalDate inizio, LocalDate fine);
 }

@@ -120,8 +120,43 @@
     </div>
 
     <div class="row g-4 mb-4">
+        <!-- Obiettivo di lettura annuale -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-bullseye me-1"></i>Obiettivo <span th:text="${annoCorrente}">2026</span>
+                </div>
+                <div class="card-body" th:if="${obiettivo != null}">
+                    <div class="d-flex justify-content-between align-items-baseline mb-1">
+                        <h3 class="mb-0">
+                            <span th:text="${lettiQuestAnno}">0</span>
+                            <small class="text-muted fs-6">/ <span th:text="${obiettivo}">0</span> libri</small>
+                        </h3>
+                        <span class="badge text-bg-primary" th:text="${percentualeObiettivo} + '%'">0%</span>
+                    </div>
+                    <div class="progress mb-3" style="height: 10px;">
+                        <div class="progress-bar bg-success" role="progressbar"
+                             th:style="'width: ' + ${percentualeObiettivo} + '%'"></div>
+                    </div>
+                    <form th:action="@{/impostazioni/obiettivo}" method="post" class="input-group input-group-sm">
+                        <input type="number" class="form-control" name="obiettivo" min="1"
+                               th:value="${obiettivo}" aria-label="Modifica obiettivo">
+                        <button class="btn btn-outline-primary" type="submit">Aggiorna</button>
+                    </form>
+                </div>
+                <div class="card-body" th:if="${obiettivo == null}">
+                    <p class="text-muted small">Quanti libri vuoi leggere quest'anno?</p>
+                    <form th:action="@{/impostazioni/obiettivo}" method="post" class="input-group input-group-sm">
+                        <input type="number" class="form-control" name="obiettivo" min="1" placeholder="es. 24"
+                               aria-label="Imposta obiettivo">
+                        <button class="btn btn-primary" type="submit">Imposta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <!-- Categorie -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-white fw-bold">
                     <i class="bi bi-tags me-1"></i>Per categoria
@@ -136,7 +171,7 @@
         </div>
 
         <!-- Azioni rapide -->
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-white fw-bold">
                     <i class="bi bi-lightning me-1"></i>Azioni rapide
@@ -284,7 +319,7 @@
                 }]
             },
             options: {
-                plugins: { legend: { position: 'right' } }
+                plugins: { legend: { position: 'bottom' } }
             }
         });
     }

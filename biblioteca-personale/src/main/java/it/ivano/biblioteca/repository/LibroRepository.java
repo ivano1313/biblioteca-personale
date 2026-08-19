@@ -4,10 +4,11 @@ import it.ivano.biblioteca.model.Libro;
 import it.ivano.biblioteca.model.Categoria;
 import it.ivano.biblioteca.model.StatoLettura;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
-public interface LibroRepository extends JpaRepository<Libro, Integer> {
+public interface LibroRepository extends JpaRepository<Libro, Integer>, JpaSpecificationExecutor<Libro> {
 
     List<Libro> findByTitoloContainingIgnoreCase(String titolo);
 

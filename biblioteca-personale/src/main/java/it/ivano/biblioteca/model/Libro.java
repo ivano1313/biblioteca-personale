@@ -1,6 +1,9 @@
 package it.ivano.biblioteca.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.LocalDate;
 
 @Entity
@@ -14,12 +17,15 @@ public class Libro {
     private String autore;
     private String isbn;
 
+    // VARCHAR (non ENUM nativo H2): aggiungere valori all'enum non richiede migration
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private Categoria categoria;
 
     private LocalDate annoPubblicazione;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private StatoLettura statoLettura = StatoLettura.DA_LEGGERE;
 
     // Valutazione da 1 a 5 stelle (null = non valutato)
@@ -27,6 +33,10 @@ public class Libro {
 
     @Column(length = 2000)
     private String note;
+
+    // Date di lettura (null = non tracciata)
+    private LocalDate dataInizioLettura;
+    private LocalDate dataFineLettura;
 
     public Libro(Integer id, String titolo, String autore, String isbn, LocalDate annoPubblicazione, Categoria categoria) {
         this.id = id;
@@ -111,6 +121,22 @@ public class Libro {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public LocalDate getDataInizioLettura() {
+        return dataInizioLettura;
+    }
+
+    public void setDataInizioLettura(LocalDate dataInizioLettura) {
+        this.dataInizioLettura = dataInizioLettura;
+    }
+
+    public LocalDate getDataFineLettura() {
+        return dataFineLettura;
+    }
+
+    public void setDataFineLettura(LocalDate dataFineLettura) {
+        this.dataFineLettura = dataFineLettura;
     }
 
     @Override

@@ -4,7 +4,8 @@ public enum StatoLettura {
 
     DA_LEGGERE("Da leggere"),
     IN_LETTURA("In lettura"),
-    LETTO("Letto");
+    LETTO("Letto"),
+    ABBANDONATO("Abbandonato");
 
     private final String label;
 

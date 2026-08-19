@@ -20,13 +20,32 @@ public class LibroWebController {
     }
 
     @GetMapping("/libri")
-    public String getLibriPage(Model model, @RequestParam(required = false) String titolo) {
-        if (titolo != null && !titolo.isEmpty()) {
-            model.addAttribute("libri", libroService.getLibriByTitolo(titolo));
-        } else {
-            model.addAttribute("libri", libroService.getAllLibri());
-        }
+    public String getLibriPage(Model model,
+                               @RequestParam(required = false) String titolo,
+                               @RequestParam(required = false) StatoLettura stato,
+                               @RequestParam(required = false) Categoria categoria,
+                               @RequestParam(required = false) Integer valutazione,
+                               @RequestParam(required = false) String sort) {
+        model.addAttribute("libri", libroService.cercaLibri(titolo, stato, categoria, valutazione, sort));
+        model.addAttribute("categorie", Categoria.values());
+        model.addAttribute("stati", StatoLettura.values());
+        // Valori correnti dei filtri, per mantenere le select sincronizzate
+        model.addAttribute("titoloCorrente", titolo);
+        model.addAttribute("statoCorrente", stato);
+        model.addAttribute("categoriaCorrente", categoria);
+        model.addAttribute("valutazioneCorrente", valutazione);
+        model.addAttribute("sortCorrente", sort);
         return "libri";
+    }
+
+    @GetMapping("/libri/{id}")
+    public String dettaglioLibro(@PathVariable("id") Integer id, Model model) {
+        Libro libro = libroService.getLibroById(id);
+        if (libro == null) {
+            return "redirect:/libri";
+        }
+        model.addAttribute("libro", libro);
+        return "dettaglio";
     }
 
     @GetMapping("/libri/modifica/{id}")
@@ -53,6 +72,8 @@ public class LibroWebController {
             libroEsistente.setStatoLettura(libro.getStatoLettura());
             libroEsistente.setValutazione(libro.getValutazione());
             libroEsistente.setNote(libro.getNote());
+            libroEsistente.setDataInizioLettura(libro.getDataInizioLettura());
+            libroEsistente.setDataFineLettura(libro.getDataFineLettura());
             libroService.updateLibro(id, libroEsistente);
         }
         return "redirect:/libri";

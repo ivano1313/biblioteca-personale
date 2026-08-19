@@ -52,6 +52,16 @@
             <option th:each="stato : ${stati}" th:value="${stato}" th:text="${stato.label}"></option>
         </select>
     </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="dataInizioLettura" class="form-label">Data inizio lettura</label>
+            <input type="date" class="form-control" id="dataInizioLettura" th:field="*{dataInizioLettura}">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="dataFineLettura" class="form-label">Data fine lettura</label>
+            <input type="date" class="form-control" id="dataFineLettura" th:field="*{dataFineLettura}">
+        </div>
+    </div>
     <div class="mb-3">
         <label for="valutazione" class="form-label">Valutazione</label>
         <select class="form-control" id="valutazione" th:field="*{valutazione}">

@@ -58,7 +58,7 @@
             <div class="card card-stat shadow-sm text-center h-100">
                 <div class="card-body">
                     <i class="fs-2"
-                       th:classappend="${stato.key.name() == 'LETTO'} ? 'bi bi-check-circle text-success' : (${stato.key.name() == 'IN_LETTURA'} ? 'bi bi-book-half text-warning' : 'bi bi-bookmark text-secondary')"></i>
+                       th:classappend="${stato.key.name() == 'LETTO'} ? 'bi bi-check-circle text-success' : (${stato.key.name() == 'IN_LETTURA'} ? 'bi bi-book-half text-warning' : (${stato.key.name() == 'ABBANDONATO'} ? 'bi bi-x-circle text-danger' : 'bi bi-bookmark text-secondary'))"></i>
                     <h2 class="display-6 mb-0" th:text="${stato.value}">0</h2>
                     <small class="text-muted" th:text="${stato.key.label}">Stato</small>
                 </div>
@@ -118,16 +118,18 @@
     <div class="row row-cols-2 row-cols-sm-3 row-cols-md-5 g-3">
         <div class="col" th:each="libro : ${ultimiLibri}">
             <div class="card h-100 shadow-sm card-stat">
-                <img th:if="${libro.isbn != null and !libro.isbn.isEmpty()}"
-                     th:src="@{|https://covers.openlibrary.org/b/isbn/${libro.isbn}-M.jpg|}"
-                     class="card-img-top copertina-mini"
-                     th:alt="${libro.titolo}"
-                     loading="lazy"
-                     onerror="sostituisciCopertina(this)">
-                <div th:if="${libro.isbn == null or libro.isbn.isEmpty()}"
-                     class="copertina-mini-placeholder card-img-top">
-                    <i class="bi bi-book fs-1"></i>
-                </div>
+                <a th:href="@{|/libri/${libro.id}|}">
+                    <img th:if="${libro.isbn != null and !libro.isbn.isEmpty()}"
+                         th:src="@{|https://covers.openlibrary.org/b/isbn/${libro.isbn}-M.jpg|}"
+                         class="card-img-top copertina-mini"
+                         th:alt="${libro.titolo}"
+                         loading="lazy"
+                         onerror="sostituisciCopertina(this)">
+                    <div th:if="${libro.isbn == null or libro.isbn.isEmpty()}"
+                         class="copertina-mini-placeholder card-img-top">
+                        <i class="bi bi-book fs-1"></i>
+                    </div>
+                </a>
                 <div class="card-body p-2">
                     <h6 class="card-title small mb-1" th:text="${libro.titolo}">Titolo</h6>
                     <small class="text-muted" th:text="${libro.autore}">Autore</small>

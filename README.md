@@ -20,6 +20,8 @@ Permette di aggiungere, modificare, cercare ed eliminare libri con una semplice 
 - ✅ Citazioni per libro con pagina di riferimento (nella pagina dettaglio)
 - ✅ Obiettivo di lettura annuale con barra di avanzamento in dashboard
 - ✅ Tag personalizzati (badge, filtro dedicato, creazione al volo dal form)
+- ✅ Export CSV della libreria (rispetta i filtri attivi, compatibile con Excel)
+- ✅ Veste grafica "carta e inchiostro": palette personalizzata e font Lora/Inter
 - ✅ Pagina di dettaglio dedicata per ogni libro (`/libri/{id}`)
 - ✅ Note personali su ogni libro
 - ✅ Modifica dati libro esistente
@@ -82,6 +84,8 @@ Apri il browser su [http://localhost:8080](http://localhost:8080) (dashboard) op
     └── HomeController.java, LibroWebController.java, LibroRestController.java
 📁 templates/
     └── home.html, libri.html, form.html, dettaglio.html
+📁 static/css/
+    └── biblioteca.css (palette e tipografia condivise)
 ```
 
 ---

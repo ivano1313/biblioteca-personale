@@ -575,8 +575,8 @@ Il tuo progetto è già su una buona base. La tabella seguente suggerisce un **r
 | **Sprint 3** | ✅ Citazioni per libro (fatto 19/08/2026) | ⭐⭐⭐ | Medio |
 | **Sprint 3** | ✅ Reading Goal annuale (fatto 19/08/2026) | ⭐⭐⭐ | Basso |
 | **Sprint 3** | ✅ Tag personalizzati (fatto 19/08/2026) | ⭐⭐⭐ | Alto |
-| **Futuro** | Export CSV | ⭐⭐⭐ | Basso |
-| **Futuro** | Palette colori + tipografia upgrade | ⭐⭐⭐ | Basso |
+| **Sprint 4** | ✅ Export CSV (fatto 20/08/2026) | ⭐⭐⭐ | Basso |
+| **Sprint 4** | ✅ Palette colori + tipografia upgrade (fatto 20/08/2026) | ⭐⭐⭐ | Basso |
 
 ---
 

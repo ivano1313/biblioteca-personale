@@ -3,15 +3,21 @@ package it.ivano.biblioteca.controller;
 import it.ivano.biblioteca.model.Categoria;
 import it.ivano.biblioteca.model.Libro;
 import it.ivano.biblioteca.model.StatoLettura;
+import it.ivano.biblioteca.model.Tag;
 import it.ivano.biblioteca.service.LibroService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class LibroWebController {
@@ -141,6 +147,53 @@ public class LibroWebController {
         libroService.deleteLibro(id);
         libroService.eliminaTagOrfani();
         return "redirect:/libri";
+    }
+
+    // Export CSV della libreria: accetta gli stessi filtri della lista, così l'export riflette la vista corrente.
+    // Separatore ";" e BOM UTF-8 per una corretta apertura in Excel con locale italiano.
+    @GetMapping("/libri/export")
+    public ResponseEntity<byte[]> esportaCsv(@RequestParam(required = false) String titolo,
+                                             @RequestParam(required = false) StatoLettura stato,
+                                             @RequestParam(required = false) Categoria categoria,
+                                             @RequestParam(required = false) Integer valutazione,
+                                             @RequestParam(required = false) String tag,
+                                             @RequestParam(required = false) String sort) {
+        List<Libro> libri = libroService.cercaLibri(titolo, stato, categoria, valutazione, tag, sort);
+        StringBuilder csv = new StringBuilder("\uFEFF"); // BOM per Excel
+        csv.append("Titolo;Autore;ISBN;Categoria;Stato;Valutazione;Pagine lette;Pagine totali;% lettura;")
+           .append("Anno pubblicazione;Inizio lettura;Fine lettura;Tag;Note\n");
+        for (Libro l : libri) {
+            csv.append(escCsv(l.getTitolo())).append(';')
+               .append(escCsv(l.getAutore())).append(';')
+               .append(escCsv(l.getIsbn())).append(';')
+               .append(l.getCategoria() != null ? l.getCategoria().name() : "").append(';')
+               .append(l.getStatoLettura() != null ? escCsv(l.getStatoLettura().getLabel()) : "").append(';')
+               .append(l.getValutazione() != null ? l.getValutazione() : "").append(';')
+               .append(l.getPagineAttuali() != null ? l.getPagineAttuali() : "").append(';')
+               .append(l.getTotalePagine() != null ? l.getTotalePagine() : "").append(';')
+               .append(l.getPercentualeLettura() != null ? l.getPercentualeLettura() : "").append(';')
+               .append(l.getAnnoPubblicazione() != null ? l.getAnnoPubblicazione() : "").append(';')
+               .append(l.getDataInizioLettura() != null ? l.getDataInizioLettura() : "").append(';')
+               .append(l.getDataFineLettura() != null ? l.getDataFineLettura() : "").append(';')
+               .append(escCsv(l.getTag().stream().map(Tag::getNome).sorted().collect(Collectors.joining(", ")))).append(';')
+               .append(escCsv(l.getNote())).append('\n');
+        }
+        byte[] bytes = csv.toString().getBytes(StandardCharsets.UTF_8);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"biblioteca.csv\"")
+                .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                .body(bytes);
+    }
+
+    // Racchiude tra doppi apici i campi che contengono separatore, apici o newline (raddoppiando gli apici interni)
+    private String escCsv(String valore) {
+        if (valore == null) {
+            return "";
+        }
+        if (valore.contains(";") || valore.contains("\"") || valore.contains("\n") || valore.contains("\r")) {
+            return '"' + valore.replace("\"", "\"\"") + '"';
+        }
+        return valore;
     }
 
 }

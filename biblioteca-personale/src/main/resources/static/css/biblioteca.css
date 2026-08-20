@@ -1,0 +1,138 @@
+/* ============================================================
+   Biblioteca Personale — palette "carta e inchiostro" e tipografia
+   Override di Bootstrap 5.3 tramite CSS custom properties:
+   i template continuano a usare le classi Bootstrap standard.
+   ============================================================ */
+
+:root {
+    /* Palette */
+    --biblio-carta: #f8f5f0;
+    --biblio-inchiostro: #2b2622;
+    --biblio-verde: #2f5d50;
+    --biblio-verde-scuro: #264d42;
+    --biblio-verde-presso: #22463c;
+    --biblio-ambra: #c9a227;
+
+    /* Override variabili globali Bootstrap */
+    --bs-primary: var(--biblio-verde);
+    --bs-primary-rgb: 47, 93, 80;
+    --bs-warning: var(--biblio-ambra);
+    --bs-warning-rgb: 201, 162, 39;
+    --bs-body-bg: var(--biblio-carta);
+    --bs-body-color: var(--biblio-inchiostro);
+    --bs-link-color: var(--biblio-verde);
+    --bs-link-hover-color: var(--biblio-verde-scuro);
+    --bs-border-color: #ddd5c8;
+}
+
+/* ---------- Tipografia ---------- */
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.navbar-brand {
+    font-family: 'Lora', Georgia, 'Times New Roman', serif;
+}
+
+/* ---------- Componenti Bootstrap ri-colorati ---------- */
+
+.btn-primary {
+    --bs-btn-bg: var(--biblio-verde);
+    --bs-btn-border-color: var(--biblio-verde);
+    --bs-btn-hover-bg: var(--biblio-verde-scuro);
+    --bs-btn-hover-border-color: var(--biblio-verde-presso);
+    --bs-btn-active-bg: var(--biblio-verde-presso);
+    --bs-btn-active-border-color: var(--biblio-verde-presso);
+    --bs-btn-disabled-bg: var(--biblio-verde);
+    --bs-btn-disabled-border-color: var(--biblio-verde);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--biblio-verde);
+    --bs-btn-border-color: var(--biblio-verde);
+    --bs-btn-hover-bg: var(--biblio-verde);
+    --bs-btn-hover-border-color: var(--biblio-verde);
+    --bs-btn-active-bg: var(--biblio-verde);
+    --bs-btn-active-border-color: var(--biblio-verde);
+}
+
+.progress {
+    --bs-progress-bar-bg: var(--biblio-verde);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #7ba398;
+    box-shadow: 0 0 0 .25rem rgba(47, 93, 80, .25);
+}
+
+.form-check-input:checked {
+    background-color: var(--biblio-verde);
+    border-color: var(--biblio-verde);
+}
+
+/* ---------- Stili condivisi dei template ---------- */
+
+/* Card con effetto sollevamento al passaggio del mouse */
+.card-libro,
+.card-stat {
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.card-libro:hover,
+.card-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 .5rem 1rem rgba(43, 38, 34, .2);
+}
+
+/* Copertine: griglia libri */
+.copertina {
+    height: 260px;
+    object-fit: cover;
+}
+
+.copertina-placeholder {
+    height: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--biblio-verde) 0%, var(--biblio-inchiostro) 100%);
+    color: #fff;
+}
+
+/* Copertine: hero dashboard */
+.copertina-mini {
+    height: 180px;
+    object-fit: cover;
+}
+
+.copertina-mini-placeholder {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--biblio-verde) 0%, var(--biblio-inchiostro) 100%);
+    color: #fff;
+}
+
+/* Copertine: pagina dettaglio */
+.copertina-grande {
+    max-width: 100%;
+    border-radius: .75rem;
+    box-shadow: 0 .5rem 1rem rgba(43, 38, 34, .2);
+}
+
+.copertina-grande-placeholder {
+    height: 420px;
+    border-radius: .75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--biblio-verde) 0%, var(--biblio-inchiostro) 100%);
+    color: #fff;
+}
